@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phrase Encryptor</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-96">
+        <h1 class="text-2xl font-bold mb-4 text-center text-purple-600">Femboy Encryptor/Decryptor</h1>
+        
+        <textarea 
+            id="inputText" 
+            class="w-full p-2 border rounded mb-4 resize-none" 
+            rows="4" 
+            placeholder="Enter your phrase..."
+        ></textarea>
+        
+        <div class="flex space-x-2 mb-4">
+            <button 
+                id="encryptBtn" 
+                class="w-1/2 bg-purple-600 text-white py-2 rounded hover:bg-purple-700 transition duration-300"
+            >
+                Encrypt
+            </button>
+            <button 
+                id="decryptBtn" 
+                class="w-1/2 bg-green-600 text-white py-2 rounded hover:bg-green-700 transition duration-300"
+            >
+                Decrypt
+            </button>
+        </div>
+        
+        <div 
+            id="outputContainer" 
+            class="mt-4 p-2 border rounded bg-gray-100 hidden"
+        >
+            <h2 
+                id="outputTitle" 
+                class="font-semibold mb-2 text-purple-600"
+            >Result:</h2>
+            <p 
+                id="outputText" 
+                class="break-words"
+            ></p>
+        </div>
+    </div>
+
+    <script>
+        const ENCRYPTION_MAP = {
+            'A': ':3',
+            'B': '3:::',
+            'C': '3:3:',
+            'D': '3::',
+            'E': ':',
+            'F': '::3:',
+            'G': '33:',
+            'H': '::::', 
+            'I': '::',
+            'J': ':333',
+            'K': '3:3',
+            'L': ':3::',
+            'M': '33',
+            'N': '3:',
+            'O': '333',
+            'P': ':33:',
+            'Q': '33:3',
+            'R': ':3:',
+            'S': ':::', 
+            'T': '3',
+            'U': '::3',
+            'V': ':::3',
+            'W': ':33',
+            'X': '3::3',
+            'Y': '3:33',
+            'Z': '33::'
+        };
+
+        const DECRYPTION_MAP = Object.fromEntries(
+            Object.entries(ENCRYPTION_MAP).map(([key, value]) => [value, key])
+        );
+
+        const inputText = document.getElementById('inputText');
+        const encryptBtn = document.getElementById('encryptBtn');
+        const decryptBtn = document.getElementById('decryptBtn');
+        const outputContainer = document.getElementById('outputContainer');
+        const outputText = document.getElementById('outputText');
+        const outputTitle = document.getElementById('outputTitle');
+
+        function encrypt(text) {
+            return text.toUpperCase().split(' ').map(word => {
+                return word.split('').map(char => {
+                    return ENCRYPTION_MAP[char] || char;
+                }).join(' ');
+            }).join(' - ');
+        }
+
+        function decrypt(text) {
+            return text.split(' - ').map(word => {
+                const codes = word.split(' ');
+                
+                return codes.map(code => {
+                    return DECRYPTION_MAP[code] || code;
+                }).join('');
+            }).join(' ');
+        }
+
+        encryptBtn.addEventListener('click', () => {
+            const input = inputText.value;
+            if (input.trim() === '') {
+                alert('Please enter a phrase to encrypt');
+                return;
+            }
+
+            const encrypted = encrypt(input);
+            outputText.textContent = encrypted;
+            outputTitle.textContent = 'Encrypted Phrase:';
+            outputContainer.classList.remove('hidden');
+        });
+
+        decryptBtn.addEventListener('click', () => {
+            const input = inputText.value;
+            if (input.trim() === '') {
+                alert('Please enter a phrase to decrypt');
+                return;
+            }
+
+            try {
+                const decrypted = decrypt(input);
+                outputText.textContent = decrypted;
+                outputTitle.textContent = 'Decrypted Phrase:';
+                outputContainer.classList.remove('hidden');
+            } catch (error) {
+                alert('Invalid encryption format');
+            }
+        });
+    </script>
+</body>
+</html>
